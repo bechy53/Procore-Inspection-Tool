@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Procore Inspection Tool",
+  "version": "1.1.0",
+  "description": "Review and fill Procore inspections via CSV import/export with bulk multi-tab analysis",
+  "permissions": [
+    "sidePanel",
+    "tabs",
+    "scripting",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://*.procore.com/*",
+    "https://app.procore.com/*"
+  ],
+  "action": {
+    "default_title": "Procore Inspection Tool",
+    "default_icon": {
+      "16": "Icons/icon-16.png",
+      "48": "Icons/icon-48.png",
+      "128": "Icons/icon-128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.procore.com/*",
+        "https://app.procore.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["detailed-report.html", "detailed-report.css", "detailed-report.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "Icons/icon-16.png",
+    "48": "Icons/icon-48.png",
+    "128": "Icons/icon-128.png"
+  }
+}
