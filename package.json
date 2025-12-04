@@ -1,0 +1,30 @@
+{
+  "name": "procore-inspection-tool",
+  "version": "1.1.0",
+  "description": "Chrome extension for reviewing and filling Procore inspections via CSV import/export with bulk multi-tab analysis",
+  "main": "src/background/background.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "validate": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bechy53/Procore-Inspection-Tool.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "procore",
+    "inspection",
+    "csv",
+    "automation"
+  ],
+  "author": "bechy53",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

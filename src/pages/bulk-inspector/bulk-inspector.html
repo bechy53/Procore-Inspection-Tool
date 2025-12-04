@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Inspector - Procore Inspection Tool</title>
+    <link rel="stylesheet" href="bulk-inspector.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Bulk Inspector</h1>
+            <p class="subtitle">Analyze multiple inspections at once</p>
+        </header>
+
+        <div class="controls">
+            <button id="scanTabsBtn" class="btn btn-primary">
+                Scan Open Tabs
+            </button>
+            <button id="extractAllBtn" class="btn btn-success" disabled>
+                Extract All Inspections
+            </button>
+            <button id="cancelBtn" class="btn btn-danger" style="display: none;">
+                Cancel
+            </button>
+            <button id="exportBtn" class="btn btn-secondary" disabled>
+                Export Summary CSV
+            </button>
+        </div>
+
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Processing...</div>
+        </div>
+
+        <div class="tabs-section" id="tabsSection" style="display: none;">
+            <div class="section-header">
+                <h3>Found Inspection Tabs</h3>
+                <div class="tab-actions">
+                    <button id="selectAllBtn" class="btn-link">Select All</button>
+                    <button id="deselectAllBtn" class="btn-link">Deselect All</button>
+                </div>
+            </div>
+            <div id="tabsList" class="tabs-list">
+                <!-- Inspection tabs will be listed here -->
+            </div>
+        </div>
+
+        <div class="summary-section" id="summarySection" style="display: none;">
+            <div class="section-header">
+                <h3>Summary Report</h3>
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <span class="stat-label">Total Inspections:</span>
+                        <span class="stat-value" id="totalInspections">0</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value" id="totalAllItems">0</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-label">Incomplete Items:</span>
+                        <span class="stat-value stat-warning" id="totalIncomplete">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="incomplete">Incomplete Only</button>
+                    <button class="filter-btn" data-filter="complete">Complete Only</button>
+                </div>
+            </div>
+
+            <div id="inspectionsList" class="inspections-list">
+                <!-- Inspections will be listed here -->
+            </div>
+        </div>
+
+        <div class="status" id="status">
+            <p>Click "Scan Open Tabs" to find all open Procore inspection pages.</p>
+        </div>
+    </div>
+
+    <script src="bulk-inspector.js"></script>
+</body>
+</html>

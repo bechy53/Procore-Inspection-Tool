@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Inspection Report - Procore Inspection Tool</title>
+    <link rel="stylesheet" href="detailed-report.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Detailed Inspection Report</h1>
+            <p class="subtitle">Comprehensive analysis of all inspections</p>
+        </header>
+
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="report">Detailed Report</button>
+            <button class="tab-btn" data-tab="multiCompare">Multi-Compare</button>
+        </div>
+
+        <div class="tab-content active" id="reportTab">
+        <div class="controls">
+            <button id="printBtn" class="btn btn-secondary">
+                Print Report
+            </button>
+            <button id="exportDetailedBtn" class="btn btn-success">
+                Export Detailed CSV
+            </button>
+            <button id="exportJsonBtn" class="btn btn-info">
+                Export as JSON
+            </button>
+            <button id="refreshBtn" class="btn btn-primary">
+                Refresh Data
+            </button>
+        </div>
+
+        <div class="summary-overview">
+            <div class="overview-card">
+                <div class="overview-label">Total Inspections</div>
+                <div class="overview-value" id="overviewInspections">0</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-label">Total Items</div>
+                <div class="overview-value" id="overviewItems">0</div>
+            </div>
+            <div class="overview-card warning">
+                <div class="overview-label">Incomplete Items</div>
+                <div class="overview-value" id="overviewIncomplete">0</div>
+            </div>
+            <div class="overview-card success">
+                <div class="overview-label">Complete Items</div>
+                <div class="overview-value" id="overviewComplete">0</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-label">Completion Rate</div>
+                <div class="overview-value" id="overviewRate">0%</div>
+            </div>
+        </div>
+
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label>Filter by Status:</label>
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Items</option>
+                    <option value="incomplete">Incomplete Only</option>
+                    <option value="complete">Complete Only</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Filter by Response:</label>
+                <select id="responseFilter" class="filter-select">
+                    <option value="all">All Responses</option>
+                    <option value="yes">Yes/Pass</option>
+                    <option value="no">No/Fail</option>
+                    <option value="na">N/A</option>
+                    <option value="blank">Blank</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Search:</label>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search items...">
+            </div>
+        </div>
+
+        <div id="reportContent" class="report-content">
+            <!-- Detailed report will be generated here -->
+        </div>
+
+        <div id="noData" class="no-data" style="display: none;">
+            <p>No inspection data available. Please run the Bulk Inspector first.</p>
+        </div>
+        </div>
+
+        <div class="tab-content" id="multiCompareTab">
+            <div class="multi-compare-controls">
+                <div class="golden-selection">
+                    <h2>Multi-Inspection Comparison</h2>
+                    <p class="instruction">Select a "Golden Inspection" as the control, then select other inspections to compare against it.</p>
+                    
+                    <div class="golden-input-group">
+                        <h3>🏆 Golden Inspection (Control)</h3>
+                        <select id="goldenInspectionSelect" class="inspection-select golden">
+                            <option value="">Select the golden/control inspection...</option>
+                        </select>
+                        <div id="goldenInfo" class="report-info golden-info"></div>
+                    </div>
+                    
+                    <div class="compare-inspections-group">
+                        <h3>Inspections to Compare</h3>
+                        <p class="sub-instruction">Select one or more inspections to compare against the golden inspection</p>
+                        <div id="compareInspectionsList" class="compare-inspections-list">
+                            <!-- Checkboxes for inspections will be added here -->
+                        </div>
+                    </div>
+                    
+                    <div class="multi-compare-action">
+                        <button id="runMultiCompareBtn" class="btn btn-success" disabled>Run Comparison</button>
+                        <button id="exportMultiComparisonBtn" class="btn btn-info" style="display: none;">Export Multi-Comparison</button>
+                    </div>
+                </div>
+                
+                <div id="multiComparisonResults" class="multi-comparison-results" style="display: none;">
+                    <div class="multi-comparison-summary">
+                        <h2>Comparison Against Golden Inspection</h2>
+                        <div class="golden-banner">
+                            <span class="golden-icon">🏆</span>
+                            <span id="goldenInspectionName">Golden Inspection</span>
+                        </div>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <div class="card-label">Inspections Compared</div>
+                                <div class="card-value" id="multiTotalCompared">0</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="card-label">Total Items</div>
+                                <div class="card-value" id="multiTotalItems">0</div>
+                            </div>
+                            <div class="summary-card success">
+                                <div class="card-label">All Match</div>
+                                <div class="card-value" id="multiAllMatch">0</div>
+                            </div>
+                            <div class="summary-card warning">
+                                <div class="card-label">Some Differ</div>
+                                <div class="card-value" id="multiSomeDiffer">0</div>
+                            </div>
+                            <div class="summary-card error">
+                                <div class="card-label">All Differ</div>
+                                <div class="card-value" id="multiAllDiffer">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="multi-comparison-filters">
+                        <label>Show Items:</label>
+                        <select id="multiComparisonFilter" class="filter-select">
+                            <option value="all">All Items</option>
+                            <option value="allMatch">All Match Golden</option>
+                            <option value="someDiffer">Some Differ from Golden</option>
+                            <option value="allDiffer">All Differ from Golden</option>
+                            <option value="missingInSome">Missing in Some Inspections</option>
+                        </select>
+                    </div>
+                    
+                    <div id="multiComparisonContent" class="multi-comparison-content">
+                        <!-- Multi-comparison results will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="detailed-report.js"></script>
+</body>
+</html>

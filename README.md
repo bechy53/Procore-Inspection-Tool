@@ -1,8 +1,18 @@
 # Procore Inspection Tool
 
-A Chrome extension that allows you to review and fill out Procore inspections using CSV import/export functionality.
+A Chrome extension that allows you to review and fill out Procore inspections using CSV import/export functionality with bulk multi-tab analysis.
 
-## Features
+## 📋 Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
+- [Documentation](#documentation)
+- [Development](#development)
+- [Support](#support)
+
+## ✨ Features
 
 - **Extract Inspection Items**: Scan the current Procore inspection page and extract all inspection items
 - **Bulk Inspector** ✨ NEW: Analyze multiple inspection tabs simultaneously to identify missing items across all open inspections
@@ -14,15 +24,29 @@ A Chrome extension that allows you to review and fill out Procore inspections us
 - **Dark Mode UI**: Modern dark theme based on Procore's orange color palette
 - **Side Panel Interface**: Clean, non-intrusive side panel that works alongside Procore
 
-## Installation
+## 📦 Installation
 
-1. Download or clone this extension
+### From Source
+
+1. Clone or download this repository:
+   ```bash
+   git clone https://github.com/bechy53/Procore-Inspection-Tool.git
+   ```
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" in the top right
-4. Click "Load unpacked" and select the extension folder
+4. Click "Load unpacked" and select the `Procore-Inspection-Tool` folder
 5. The Procore Inspection Tool icon should appear in your extensions toolbar
 
-## Usage
+## 🚀 Quick Start
+
+1. **Navigate** to a Procore inspection page
+2. **Click** the extension icon to open the side panel
+3. **Extract** items from the page
+4. **Export** to CSV, edit in Excel/Sheets
+5. **Import** the filled CSV back
+6. **Fill** the inspection automatically
+
+## 📖 Usage
 
 ### 1. Extract Inspection Items
 
@@ -150,29 +174,117 @@ This extension requires:
 
 All data processing happens locally in your browser. No data is sent to external servers.
 
-## Development
+## 📚 Documentation
 
-Built with:
-- Manifest V3
-- Chrome Side Panel API
-- Vanilla JavaScript (no frameworks)
-- CSS with dark mode Procore theme
+- **[Architecture Guide](docs/ARCHITECTURE.md)** - Understand the codebase structure
+- **[Development Guide](docs/DEVELOPMENT.md)** - Set up your development environment
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - Contribute to the project
+- **[API Documentation](docs/API.md)** - API reference for services and utilities
+- **[Changelog](CHANGELOG.md)** - Version history and updates
 
-## Support
+## 🛠️ Development
 
-For issues, feature requests, or questions, please contact the extension developer.
-## Version History
+### Prerequisites
+
+- Chrome 88+
+- Node.js 14+ (for development tools)
+- Git
+
+### Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/bechy53/Procore-Inspection-Tool.git
+   cd Procore-Inspection-Tool
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Load in Chrome**
+   - Open `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked"
+   - Select the project directory
+
+### Project Structure
+
+```
+Procore-Inspection-Tool/
+├── src/
+│   ├── background/       # Background service worker
+│   ├── content/          # Content scripts
+│   ├── sidepanel/        # Side panel UI
+│   ├── pages/            # Additional pages
+│   ├── services/         # Business logic services
+│   ├── utils/            # Utility modules
+│   └── shared/           # Shared modules
+├── assets/               # Icons and images
+├── docs/                 # Documentation
+└── manifest.json         # Extension manifest
+```
+
+### Development Workflow
+
+1. Make changes to files in `src/`
+2. Reload extension in Chrome
+3. Test on Procore pages
+4. Run linting: `npm run lint`
+5. Commit and push
+
+See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for detailed development guide.
+
+### Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Auto-fix issues
+npm run lint:fix
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please read our [Contributing Guide](docs/CONTRIBUTING.md) for details on:
+
+- Code of conduct
+- Development process
+- Coding standards
+- Pull request process
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🐛 Support
+
+For issues, feature requests, or questions:
+
+1. Check existing [issues](https://github.com/bechy53/Procore-Inspection-Tool/issues)
+2. Review [documentation](docs/)
+3. Open a new issue with detailed information
+
+## 🙏 Acknowledgments
+
+- Built with Chrome Manifest V3
+- Uses Chrome Side Panel API
+- Designed for Procore's inspection workflow
+
+## 📊 Version History
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
 **v1.1.0** (December 2025)
 - Added Bulk Inspector feature for multi-tab inspection analysis
-- Enhanced UI with purple accent for Bulk Inspector
-- Added comprehensive summary reports
-- Export functionality for bulk inspection data
+- Restructured codebase with services and utilities layer
+- Enhanced documentation and developer experience
 
 **v1.0.0** (November 2025)
 - Initial release
 - Extract inspection items
 - CSV export/import
 - Bulk fill functionality
-- Dark mode UInctionality
 - Dark mode UI
