@@ -4,6 +4,15 @@
  */
 
 /**
+ * Valid Procore domain patterns
+ * @constant {Array<RegExp>}
+ */
+export const PROCORE_DOMAINS = [
+  /^https:\/\/[a-zA-Z0-9-]+\.procore\.com\//,
+  /^https:\/\/app\.procore\.com\//
+];
+
+/**
  * Procore-specific selectors for DOM elements
  * @constant {Object}
  */

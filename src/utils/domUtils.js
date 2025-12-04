@@ -172,3 +172,36 @@ export function findInspectionScrollContainer() {
     return el.querySelector('[data-qa^="inspection-item-"]') || el.querySelector('[data-qa="item-row"]');
   }) || null;
 }
+
+/**
+ * Validates if a URL is a valid Procore URL
+ * @param {string} url - URL to validate
+ * @returns {boolean} True if valid Procore URL
+ */
+export function isValidProcoreUrl(url) {
+  if (!url) return false;
+  
+  try {
+    const urlObj = new URL(url);
+    // Check if hostname ends with .procore.com or is app.procore.com
+    return urlObj.hostname.endsWith('.procore.com') || urlObj.hostname === 'app.procore.com';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Validates if a URL is a Procore inspection page
+ * @param {string} url - URL to validate
+ * @returns {boolean} True if valid inspection page
+ */
+export function isValidProcoreInspectionUrl(url) {
+  if (!isValidProcoreUrl(url)) return false;
+  
+  try {
+    const urlObj = new URL(url);
+    return urlObj.pathname.includes('/inspections/') || urlObj.pathname.includes('/inspection/');
+  } catch {
+    return false;
+  }
+}

@@ -56,12 +56,22 @@ class BulkInspector {
             // Get all tabs in current window
             const tabs = await chrome.tabs.query({ currentWindow: true });
             
+            // Helper function to validate Procore URL
+            const isValidProcoreUrl = (urlString) => {
+                if (!urlString) return false;
+                try {
+                    const url = new URL(urlString);
+                    return url.hostname.endsWith('.procore.com') || url.hostname === 'app.procore.com';
+                } catch {
+                    return false;
+                }
+            };
+            
             // Filter for Procore inspection tabs
-            this.inspectionTabs = tabs.filter(tab => 
-                tab.url && 
-                tab.url.includes('procore.com') && 
-                (tab.url.includes('/inspections/') || tab.url.includes('/inspection/'))
-            );
+            this.inspectionTabs = tabs.filter(tab => {
+                if (!tab.url || !isValidProcoreUrl(tab.url)) return false;
+                return tab.url.includes('/inspections/') || tab.url.includes('/inspection/');
+            });
 
             if (this.inspectionTabs.length === 0) {
                 this.setStatus('No Procore inspection tabs found. Please open some inspection pages first.', 'error');

@@ -160,8 +160,22 @@ class InspectionFillerPanel {
             // Get the active tab
             const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-            if (!tab.url.includes('procore.com')) {
+            // Validate URL more strictly - check hostname
+            if (!tab.url) {
                 throw new Error('Please navigate to a Procore inspection page first');
+            }
+            
+            try {
+                const url = new URL(tab.url);
+                const isValidProcore = url.hostname.endsWith('.procore.com') || url.hostname === 'app.procore.com';
+                if (!isValidProcore) {
+                    throw new Error('Please navigate to a Procore inspection page first');
+                }
+            } catch (urlError) {
+                if (urlError.message.includes('Procore')) {
+                    throw urlError;
+                }
+                throw new Error('Invalid URL - Please navigate to a Procore inspection page first');
             }
 
             // Listen for progress updates from content script
@@ -567,8 +581,22 @@ class InspectionFillerPanel {
             // Get the active tab
             const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-            if (!tab.url.includes('procore.com')) {
+            // Validate URL more strictly - check hostname
+            if (!tab.url) {
                 throw new Error('Please navigate to a Procore inspection page first');
+            }
+            
+            try {
+                const url = new URL(tab.url);
+                const isValidProcore = url.hostname.endsWith('.procore.com') || url.hostname === 'app.procore.com';
+                if (!isValidProcore) {
+                    throw new Error('Please navigate to a Procore inspection page first');
+                }
+            } catch (urlError) {
+                if (urlError.message.includes('Procore')) {
+                    throw urlError;
+                }
+                throw new Error('Invalid URL - Please navigate to a Procore inspection page first');
             }
 
             // Listen for progress updates from content script
@@ -828,11 +856,21 @@ class InspectionFillerPanel {
         try {
             const tabs = await chrome.tabs.query({ currentWindow: true });
             
-            this.inspectionTabs = tabs.filter(tab => 
-                tab.url && 
-                tab.url.includes('procore.com') && 
-                (tab.url.includes('/inspections/') || tab.url.includes('/inspection/'))
-            );
+            // Helper function to validate Procore URL
+            const isValidProcoreUrl = (urlString) => {
+                if (!urlString) return false;
+                try {
+                    const url = new URL(urlString);
+                    return url.hostname.endsWith('.procore.com') || url.hostname === 'app.procore.com';
+                } catch {
+                    return false;
+                }
+            };
+            
+            this.inspectionTabs = tabs.filter(tab => {
+                if (!tab.url || !isValidProcoreUrl(tab.url)) return false;
+                return tab.url.includes('/inspections/') || tab.url.includes('/inspection/');
+            });
 
             if (this.inspectionTabs.length === 0) {
                 this.setBulkStatus('No Procore inspection tabs found. Please open some inspection pages first.', 'error');
@@ -1256,10 +1294,6 @@ class InspectionFillerPanel {
         chrome.tabs.create({
             url: chrome.runtime.getURL('src/pages/detailed-report/detailed-report.html')
         });
-    }
-    
-    showBulkProgress(text, percent) {
-        this.setBulkStatus('Summary exported successfully', 'success');
     }
     
     showBulkProgress(text, percent) {
