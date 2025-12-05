@@ -17,16 +17,17 @@
   "action": {
     "default_title": "Procore Inspection Tool",
     "default_icon": {
-      "16": "Icons/icon-16.png",
-      "48": "Icons/icon-48.png",
-      "128": "Icons/icon-128.png"
+      "16": "assets/Icons/icon-16.png",
+      "48": "assets/Icons/icon-48.png",
+      "128": "assets/Icons/icon-128.png"
     }
   },
   "side_panel": {
-    "default_path": "sidepanel.html"
+    "default_path": "src/sidepanel/sidepanel.html"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background/background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -34,19 +35,23 @@
         "https://*.procore.com/*",
         "https://app.procore.com/*"
       ],
-      "js": ["content.js"],
+      "js": ["src/content/content.js"],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["detailed-report.html", "detailed-report.css", "detailed-report.js"],
+      "resources": [
+        "src/pages/detailed-report/detailed-report.html",
+        "src/pages/detailed-report/detailed-report.css",
+        "src/pages/detailed-report/detailed-report.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ],
   "icons": {
-    "16": "Icons/icon-16.png",
-    "48": "Icons/icon-48.png",
-    "128": "Icons/icon-128.png"
+    "16": "assets/Icons/icon-16.png",
+    "48": "assets/Icons/icon-48.png",
+    "128": "assets/Icons/icon-128.png"
   }
 }
