@@ -42,6 +42,7 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "lib/xlsx.full.min.js",
         "src/pages/detailed-report/detailed-report.html",
         "src/pages/detailed-report/detailed-report.css",
         "src/pages/detailed-report/detailed-report.js"

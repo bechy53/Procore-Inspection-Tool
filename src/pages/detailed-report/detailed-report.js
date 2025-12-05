@@ -27,8 +27,6 @@ class DetailedReport {
         // Report tab elements
         this.printBtn = document.getElementById('printBtn');
         this.exportDetailedBtn = document.getElementById('exportDetailedBtn');
-        this.exportJsonBtn = document.getElementById('exportJsonBtn');
-        this.refreshBtn = document.getElementById('refreshBtn');
         this.statusFilter = document.getElementById('statusFilter');
         this.responseFilter = document.getElementById('responseFilter');
         this.searchInput = document.getElementById('searchInput');
@@ -68,8 +66,6 @@ class DetailedReport {
         // Report tab listeners
         this.printBtn.addEventListener('click', () => window.print());
         this.exportDetailedBtn.addEventListener('click', () => this.exportDetailedCSV());
-        this.exportJsonBtn.addEventListener('click', () => this.exportJson());
-        this.refreshBtn.addEventListener('click', () => this.loadData());
         this.statusFilter.addEventListener('change', () => this.applyFilters());
         this.responseFilter.addEventListener('change', () => this.applyFilters());
         this.searchInput.addEventListener('input', () => this.applyFilters());
@@ -182,6 +178,7 @@ class DetailedReport {
                 // Response filter
                 if (responseValue !== 'all') {
                     const response = (item.currentResponse || '').toLowerCase();
+                    const textValue = (item.textValue || '').trim();
                     if (responseValue === 'yes' && !response.includes('yes') && !response.includes('pass')) {
                         return false;
                     }
@@ -191,7 +188,7 @@ class DetailedReport {
                     if (responseValue === 'na' && !response.includes('n/a') && !response.includes('na')) {
                         return false;
                     }
-                    if (responseValue === 'blank' && response !== '') {
+                    if (responseValue === 'blank' && (response !== '' || textValue !== '')) {
                         return false;
                     }
                 }
@@ -323,59 +320,234 @@ class DetailedReport {
     }
 
     exportDetailedCSV() {
-        let csvContent = 'Inspection Title,Tab ID,URL,Item Number,Item Description,Status,Response,Item Index\n';
-
-        this.reportData.forEach(inspection => {
-            if (inspection.error) return;
-
-            inspection.items.forEach(item => {
-                const isFilled = (item.currentResponse && item.currentResponse !== '') || (item.textValue && item.textValue !== '');
-                const status = isFilled ? 'Complete' : 'Incomplete';
-                const response = item.currentResponse || item.textValue || '';
-                
-                const row = [
-                    this.escapeCsv(inspection.title),
-                    inspection.tabId,
-                    this.escapeCsv(inspection.url),
-                    this.escapeCsv(item.itemNumber || ''),
-                    this.escapeCsv(item.title),
-                    status,
-                    this.escapeCsv(response),
-                    item.index || ''
-                ].join(',');
-                
-                csvContent += row + '\n';
-            });
-        });
-
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `detailed-inspection-report-${this.getTimestamp()}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-    
-    exportJson() {
-        if (!this.reportData || this.reportData.length === 0) {
-            alert('No report data to export');
+        if (!window.XLSX) {
+            alert('Excel library not loaded. Please refresh the page and try again.');
             return;
         }
+
+        const workbook = XLSX.utils.book_new();
         
-        const jsonString = JSON.stringify(this.reportData, null, 2);
-        const blob = new Blob([jsonString], { type: 'application/json' });
+        // Set workbook properties
+        workbook.Props = {
+            Title: "Procore Inspection Report",
+            Subject: "Inspection Analysis",
+            Author: "Procore Inspection Tool",
+            CreatedDate: new Date()
+        };
+        
+        // Create summary sheet
+        this.createSummarySheet(workbook);
+        
+        // Create a sheet for each inspection
+        this.reportData.forEach((inspection, index) => {
+            if (inspection.error) return;
+            
+            this.createInspectionSheet(workbook, inspection, index + 1);
+        });
+
+        // Generate Excel file with cell styles and download
+        const excelBuffer = XLSX.write(workbook, { 
+            bookType: 'xlsx', 
+            type: 'array',
+            cellStyles: true
+        });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `inspection-report-${this.getTimestamp()}.json`;
+        a.download = `inspection-report-${this.getTimestamp()}.xlsx`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
+
+    createSummarySheet(workbook) {
+        const summaryData = [];
+        
+        // Title section with formatting markers
+        summaryData.push(['═══════════════════════════════════════════════════════════════']);
+        summaryData.push(['    PROCORE INSPECTION REPORT - SUMMARY']);
+        summaryData.push(['═══════════════════════════════════════════════════════════════']);
+        summaryData.push(['Generated: ' + new Date().toLocaleString()]);
+        summaryData.push(['']);
+        
+        // Overall statistics
+        let totalItems = 0;
+        let completeItems = 0;
+        let incompleteItems = 0;
+        
+        this.reportData.forEach(inspection => {
+            if (inspection.error) return;
+            
+            inspection.items.forEach(item => {
+                totalItems++;
+                const isFilled = (item.currentResponse && item.currentResponse !== '') || (item.textValue && item.textValue !== '');
+                if (isFilled) {
+                    completeItems++;
+                } else {
+                    incompleteItems++;
+                }
+            });
+        });
+        
+        const completionRate = totalItems > 0 ? ((completeItems / totalItems) * 100).toFixed(1) : 0;
+        
+        summaryData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        summaryData.push(['    OVERALL STATISTICS']);
+        summaryData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        summaryData.push(['Total Inspections:', this.reportData.filter(i => !i.error).length]);
+        summaryData.push(['Total Items:', totalItems]);
+        summaryData.push(['Complete Items:', completeItems]);
+        summaryData.push(['Incomplete Items:', incompleteItems]);
+        summaryData.push(['Completion Rate:', completionRate + '%']);
+        summaryData.push(['']);
+        
+        // Inspection breakdown
+        summaryData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        summaryData.push(['    INSPECTION BREAKDOWN']);
+        summaryData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        summaryData.push(['#', 'Inspection Name', 'Location', 'Total', 'Complete', 'Incomplete', 'Rate %', 'Sheet']);
+        
+        this.reportData.forEach((inspection, index) => {
+            if (inspection.error) return;
+            
+            const items = inspection.items || [];
+            const complete = items.filter(item => 
+                (item.currentResponse && item.currentResponse !== '') || (item.textValue && item.textValue !== '')
+            ).length;
+            const total = items.length;
+            const incomplete = total - complete;
+            const rate = total > 0 ? ((complete / total) * 100).toFixed(1) : '0.0';
+            const inspName = inspection.metadata?.inspectionName || inspection.title || 'Unnamed Inspection';
+            const location = inspection.metadata?.location || '';
+            
+            summaryData.push([
+                index + 1,
+                inspName,
+                location,
+                total,
+                complete,
+                incomplete,
+                rate,
+                `Inspection ${index + 1}`
+            ]);
+        });
+        
+        summaryData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        
+        const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+        
+        // Apply column widths for better visibility
+        summarySheet['!cols'] = [
+            { wch: 22 },  // Wide enough for "Total Inspections:"
+            { wch: 45 },  // Inspection Name
+            { wch: 28 },  // Location
+            { wch: 10 },  // Total
+            { wch: 11 },  // Complete
+            { wch: 13 },  // Incomplete
+            { wch: 10 },  // Rate
+            { wch: 16 }   // Sheet
+        ];
+        
+        // Freeze the header row
+        summarySheet['!freeze'] = { xSplit: 0, ySplit: 18 };
+        
+        XLSX.utils.book_append_sheet(workbook, summarySheet, 'Summary');
+    }
+
+    createInspectionSheet(workbook, inspection, inspectionNumber) {
+        const sheetData = [];
+        const inspName = inspection.metadata?.inspectionName || inspection.title || 'Unnamed Inspection';
+        const location = inspection.metadata?.location || '';
+        
+        // Header section with visual separators
+        sheetData.push(['═══════════════════════════════════════════════════════════════════════════════════']);
+        sheetData.push(['    ' + inspName]);
+        sheetData.push(['═══════════════════════════════════════════════════════════════════════════════════']);
+        sheetData.push(['']);
+        sheetData.push(['Location:', location]);
+        sheetData.push(['URL:', inspection.url]);
+        sheetData.push(['Tab ID:', inspection.tabId]);
+        sheetData.push(['Extracted:', new Date().toLocaleString()]);
+        sheetData.push(['']);
+        
+        // Statistics section
+        const items = inspection.items || [];
+        const complete = items.filter(item => 
+            (item.currentResponse && item.currentResponse !== '') || (item.textValue && item.textValue !== '')
+        ).length;
+        const total = items.length;
+        const incomplete = total - complete;
+        const rate = total > 0 ? ((complete / total) * 100).toFixed(1) : '0.0';
+        
+        sheetData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        sheetData.push(['    INSPECTION STATISTICS']);
+        sheetData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        sheetData.push(['Total Items:', total, '', 'Completion Rate:', rate + '%']);
+        sheetData.push(['Complete:', complete, '', 'Incomplete:', incomplete]);
+        sheetData.push(['']);
+        
+        // Items table header
+        sheetData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        sheetData.push(['    INSPECTION ITEMS']);
+        sheetData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        sheetData.push(['#', 'Item Number', 'Description', 'Status', 'Response', 'Notes/Text Value']);
+        
+        // Items data
+        items.forEach((item, index) => {
+            const isFilled = (item.currentResponse && item.currentResponse !== '') || (item.textValue && item.textValue !== '');
+            const status = isFilled ? '✓ Complete' : '○ Incomplete';
+            const response = item.currentResponse || '';
+            const notes = item.textValue || '';
+            
+            sheetData.push([
+                index + 1,
+                item.itemNumber || 'N/A',
+                item.title || '',
+                status,
+                response,
+                notes
+            ]);
+        });
+        
+        sheetData.push(['━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━']);
+        sheetData.push(['']);
+        sheetData.push(['Summary:', `${complete}/${total} items complete (${rate}%)`]);
+        
+        const sheet = XLSX.utils.aoa_to_sheet(sheetData);
+        
+        // Apply column widths for optimal viewing
+        sheet['!cols'] = [
+            { wch: 6 },   // #
+            { wch: 14 },  // Item Number
+            { wch: 60 },  // Description
+            { wch: 15 },  // Status
+            { wch: 25 },  // Response
+            { wch: 45 }   // Notes
+        ];
+        
+        // Freeze header rows so they stay visible when scrolling
+        sheet['!freeze'] = { xSplit: 0, ySplit: 19 };
+        
+        // Auto-filter on the data table
+        const lastRow = 18 + items.length;
+        sheet['!autofilter'] = { ref: `A19:F${lastRow}` };
+        
+        // Sanitize sheet name (Excel has 31 char limit and restricts certain characters)
+        let sheetName = `Inspection ${inspectionNumber}`;
+        if (inspName.length < 20) {
+            sheetName = inspName.substring(0, 20);
+        }
+        if (sheetName.length > 31) {
+            sheetName = sheetName.substring(0, 31);
+        }
+        sheetName = sheetName.replace(/[:\\\/\?\*\[\]]/g, '-');
+        
+        XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
+    }
+    
+
 
     escapeHtml(text) {
         const div = document.createElement('div');

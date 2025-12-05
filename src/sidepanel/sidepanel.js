@@ -1342,4 +1342,14 @@ class InspectionFillerPanel {
 // Initialize the panel when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new InspectionFillerPanel();
+    
+    // Add click handler for metadata container collapse/expand
+    const metadataContainer = document.getElementById('metadataContainer');
+    const metadataHeader = metadataContainer?.querySelector('.metadata-header');
+    
+    if (metadataHeader) {
+        metadataHeader.addEventListener('click', () => {
+            metadataContainer.classList.toggle('collapsed');
+        });
+    }
 });
