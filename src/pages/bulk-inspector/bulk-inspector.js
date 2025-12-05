@@ -307,7 +307,7 @@ class BulkInspector {
                     </div>
                     <div class="inspection-stats">
                         <div class="inspection-stat incomplete">
-                            <span class="inspection-stat-value">⚠️</span>
+                            <span class="inspection-stat-value">!</span>
                             <span class="inspection-stat-label">Error</span>
                         </div>
                     </div>
@@ -363,7 +363,7 @@ class BulkInspector {
                         <div class="items-section-title">Incomplete Items (${incompleteItems.length})</div>
                         ${incompleteItems.map(item => this.createItemRow(item)).join('')}
                     </div>
-                ` : '<div class="empty-state-text">All items are complete! 🎉</div>'}
+                ` : '<div class="empty-state-text">All items are complete!</div>'}
             </div>
         `;
 

@@ -1109,7 +1109,7 @@ class InspectionFillerPanel {
                     </div>
                     <div class="inspection-stats">
                         <div class="inspection-stat incomplete">
-                            <span class="inspection-stat-value">⚠️</span>
+                            <span class="inspection-stat-value">!</span>
                             <span class="inspection-stat-label">Error</span>
                         </div>
                     </div>
@@ -1165,7 +1165,7 @@ class InspectionFillerPanel {
                         <div class="items-section-title">Incomplete Items (${incompleteItems.length})</div>
                         ${incompleteItems.map(item => this.createBulkItemRow(item)).join('')}
                     </div>
-                ` : '<div class="empty-state-text">All items are complete! 🎉</div>'}
+                ` : '<div class="empty-state-text">All items are complete!</div>'}
             </div>
         `;
 

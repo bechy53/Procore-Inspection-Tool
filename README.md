@@ -2,7 +2,7 @@
 
 A Chrome extension that allows you to review and fill out Procore inspections using CSV import/export functionality with bulk multi-tab analysis.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#features)
 - [Installation](#installation)
@@ -12,10 +12,10 @@ A Chrome extension that allows you to review and fill out Procore inspections us
 - [Development](#development)
 - [Support](#support)
 
-## ✨ Features
+## Features
 
 - **Extract Inspection Items**: Scan the current Procore inspection page and extract all inspection items
-- **Bulk Inspector** ✨ NEW: Analyze multiple inspection tabs simultaneously to identify missing items across all open inspections
+- **Bulk Inspector** NEW: Analyze multiple inspection tabs simultaneously to identify missing items across all open inspections
 - **Response Report**: View counts of Yes, No, N/A, and Blank responses with filtering capabilities
 - **Export to CSV**: Download inspection items as a CSV file for easy editing
 - **Bulk Fill**: Import a filled CSV file and automatically populate the inspection form
@@ -24,7 +24,7 @@ A Chrome extension that allows you to review and fill out Procore inspections us
 - **Dark Mode UI**: Modern dark theme based on Procore's orange color palette
 - **Side Panel Interface**: Clean, non-intrusive side panel that works alongside Procore
 
-## 📦 Installation
+## Installation
 
 ### From Source
 
@@ -37,7 +37,7 @@ A Chrome extension that allows you to review and fill out Procore inspections us
 4. Click "Load unpacked" and select the `Procore-Inspection-Tool` folder
 5. The Procore Inspection Tool icon should appear in your extensions toolbar
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Navigate** to a Procore inspection page
 2. **Click** the extension icon to open the side panel
@@ -46,7 +46,7 @@ A Chrome extension that allows you to review and fill out Procore inspections us
 5. **Import** the filled CSV back
 6. **Fill** the inspection automatically
 
-## 📖 Usage
+## Usage
 
 ### 1. Extract Inspection Items
 
@@ -93,7 +93,7 @@ Open the CSV file in Excel, Google Sheets, or any spreadsheet application and:
 For analyzing multiple inspections at once:
 
 1. **Open Multiple Inspections**: Open all Procore inspection pages you want to analyze in separate Chrome tabs
-2. **Launch Bulk Inspector**: Click the **"🔍 Bulk Inspector"** button at the top of the side panel
+2. **Launch Bulk Inspector**: Click the **"Bulk Inspector"** button at the top of the side panel
 3. **Scan Tabs**: In the new window, click **"Scan Open Tabs"** to detect all inspection pages
 4. **Select Inspections**: Choose which inspections to analyze (all are selected by default)
 5. **Extract All**: Click **"Extract All Inspections"** to gather data from all selected tabs
@@ -174,7 +174,7 @@ This extension requires:
 
 All data processing happens locally in your browser. No data is sent to external servers.
 
-## 📚 Documentation
+## Documentation
 
 - **[Architecture Guide](docs/ARCHITECTURE.md)** - Understand the codebase structure
 - **[Development Guide](docs/DEVELOPMENT.md)** - Set up your development environment
@@ -182,7 +182,7 @@ All data processing happens locally in your browser. No data is sent to external
 - **[API Documentation](docs/API.md)** - API reference for services and utilities
 - **[Changelog](CHANGELOG.md)** - Version history and updates
 
-## 🛠️ Development
+## Development
 
 ### Prerequisites
 
@@ -246,7 +246,7 @@ npm run lint
 npm run lint:fix
 ```
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please read our [Contributing Guide](docs/CONTRIBUTING.md) for details on:
 
@@ -255,11 +255,11 @@ We welcome contributions! Please read our [Contributing Guide](docs/CONTRIBUTING
 - Coding standards
 - Pull request process
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🐛 Support
+## Support
 
 For issues, feature requests, or questions:
 
@@ -267,13 +267,13 @@ For issues, feature requests, or questions:
 2. Review [documentation](docs/)
 3. Open a new issue with detailed information
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built with Chrome Manifest V3
 - Uses Chrome Side Panel API
 - Designed for Procore's inspection workflow
 
-## 📊 Version History
+## Version History
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 

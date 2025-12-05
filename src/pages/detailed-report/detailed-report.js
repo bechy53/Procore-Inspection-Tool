@@ -482,7 +482,7 @@ class DetailedReport {
             
             this.goldenInfo.className = 'report-info golden-info loaded';
             this.goldenInfo.innerHTML = `
-                <strong>🏆 ${inspName}</strong><br>
+                <strong>${inspName}</strong><br>
                 Items: ${totalItems} | Complete: ${completeItems} (${completionRate}%)
             `;
             
@@ -669,7 +669,7 @@ class DetailedReport {
             case 'allMatch':
                 badgeClass = 'all-match';
                 badgeText = 'All Match';
-                statusIcon = '✓✓✓';
+                statusIcon = '✓';
                 break;
             case 'someDiffer':
                 badgeClass = 'some-differ';
@@ -679,7 +679,7 @@ class DetailedReport {
             case 'allDiffer':
                 badgeClass = 'all-differ';
                 badgeText = 'All Differ';
-                statusIcon = '✗';
+                statusIcon = 'X';
                 break;
         }
         
@@ -696,7 +696,7 @@ class DetailedReport {
                 </div>
                 <div class="multi-change-details">
                     <div class="golden-response-row">
-                        <div class="response-label">🏆 Golden Response:</div>
+                        <div class="response-label">Golden Response:</div>
                         <div class="response-value golden-value">${this.escapeHtml(itemComparison.goldenResponse) || '<em>Empty</em>'}</div>
                     </div>
                     <div class="comparisons-grid">

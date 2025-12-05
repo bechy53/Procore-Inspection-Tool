@@ -334,4 +334,4 @@ refactor: improve code structure
 - Check [ARCHITECTURE.md](ARCHITECTURE.md) to understand the codebase
 - Review [API.md](API.md) for API documentation
 
-Happy coding! 🚀
+Happy coding!
